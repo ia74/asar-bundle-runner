@@ -34,9 +34,7 @@ module.exports = {
  exec: () => {
   const robotjs = require('robotjs');
   console.log('Moving mouse to 0, 0')
-  setInterval(() => {
-   robotjs.moveMouse(0, 0);
-  },250)
+  robotjs.moveMouse(0, 0);
  },
  onButtonPressed: (button) => {
   console.log(button)
