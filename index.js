@@ -1,5 +1,3 @@
-// require('./test.asar/index.js')
-
 const fs = require('fs');
 const path = require('node:path');
 const asar = require('@electron/asar');
