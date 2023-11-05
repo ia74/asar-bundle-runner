@@ -15,7 +15,7 @@ const mods = new Map();
 
 asar.createPackage('./asar-test', `./${filename}`).then(a => {
 	asar.extractAll(`./${filename}`, `${temporaryDirectoryName}/${extractedPrefix}${filename}`);
-	checkExistsWithTimeout(`./${temporaryDirectoryName}/${extractedPrefix}${filename}/package.json`, 1000).then(() => {
+	checkExistsWithTimeout(`./${temporaryDirectoryName}/${extractedPrefix}${filename}/package.json`,2).then(() => {
 		fs.chmodSync(`./${temporaryDirectoryName}/${extractedPrefix}${filename}`, 0o777);
 		const mainCfgFile = require(`./${temporaryDirectoryName}/${extractedPrefix}${filename}/package.json`).main;
 		const cfg = require(`./${temporaryDirectoryName}/${extractedPrefix}` + filename + '/' + mainCfgFile);
@@ -30,7 +30,7 @@ function checkExistsWithTimeout(filePath, timeout) {
 
 			var timer = setTimeout(function () {
 					watcher.close();
-					reject(new Error('File did not exists and was not created during the timeout.'));
+					checkExistsWithTimeout(filePath, timeout).then(resolve, reject);
 			}, timeout);
 
 			fs.access(filePath, fs.constants.R_OK, function (err) {
