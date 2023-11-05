@@ -17,6 +17,7 @@ asar.createPackage('./asar-test', `./${filename}`).then(a => {
 		fs.chmodSync(`./tmp/_extracted_${filename}`, 0o777);
 		const robotjs = require('./tmp/_extracted_' + filename + '/index.js');
 		mods.set(filename, robotjs);
+		robotjs.exec();
 	})
 })
 
