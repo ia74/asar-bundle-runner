@@ -63,5 +63,5 @@ abr.extract('MyCoolBundle.asar'); // This loads the bundle into memory and extra
 abr.modules['MyCoolBundle.asar'].exec(); // This accesses the direct `entrypoint.js` contents.
 
 // You could even do something like
-abr.modules['MyCoolBundle.asar'].
+abr.modules['MyCoolBundle.asar'].myParameter // this must exist in `entrypoint.js`'s module.exports
 ```
