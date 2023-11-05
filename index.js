@@ -13,11 +13,13 @@ const mods = new Map();
 
 asar.createPackage('./asar-test', `./${filename}`).then(a => {
 	asar.extractAll(`./${filename}`, `tmp/_extracted_${filename}`);
-	checkExistsWithTimeout(`./tmp/_extracted_${filename}/index.js`, 1000).then(() => {
+	checkExistsWithTimeout(`./tmp/_extracted_${filename}/package.json`, 1000).then(() => {
 		fs.chmodSync(`./tmp/_extracted_${filename}`, 0o777);
-		const robotjs = require('./tmp/_extracted_' + filename + '/index.js');
-		mods.set(filename, robotjs);
-		robotjs.exec();
+		const mainCfgFile = require(`./tmp/_extracted_${filename}/package.json`).main;
+		const cfg = require('./tmp/_extracted_' + filename + '/' + mainCfgFile);
+		const module = require('./tmp/_extracted_' + filename + '/' + cfg.entrypoint);
+		mods.set(filename, module);
+		module.exec();
 	})
 })
 
