@@ -5,19 +5,21 @@ const path = require('node:path');
 const asar = require('@electron/asar');
 
 const filename = 'test.Freedeck';
+const temporaryDirectoryName = 'tmp';
+const extractedPrefix = '_extracted_';
 
-if (!fs.existsSync('./tmp')) fs.mkdirSync('./tmp');
-fs.chmodSync('./tmp', 0o777);
+if (!fs.existsSync('./' + temporaryDirectoryName)) fs.mkdirSync('./' + temporaryDirectoryName);
+fs.chmodSync('./' + temporaryDirectoryName, 0o777);
 
 const mods = new Map();
 
 asar.createPackage('./asar-test', `./${filename}`).then(a => {
-	asar.extractAll(`./${filename}`, `tmp/_extracted_${filename}`);
-	checkExistsWithTimeout(`./tmp/_extracted_${filename}/package.json`, 1000).then(() => {
-		fs.chmodSync(`./tmp/_extracted_${filename}`, 0o777);
-		const mainCfgFile = require(`./tmp/_extracted_${filename}/package.json`).main;
-		const cfg = require('./tmp/_extracted_' + filename + '/' + mainCfgFile);
-		const module = require('./tmp/_extracted_' + filename + '/' + cfg.entrypoint);
+	asar.extractAll(`./${filename}`, `${temporaryDirectoryName}/${extractedPrefix}${filename}`);
+	checkExistsWithTimeout(`./${temporaryDirectoryName}/${extractedPrefix}${filename}/package.json`, 1000).then(() => {
+		fs.chmodSync(`./${temporaryDirectoryName}/${extractedPrefix}${filename}`, 0o777);
+		const mainCfgFile = require(`./${temporaryDirectoryName}/${extractedPrefix}${filename}/package.json`).main;
+		const cfg = require(`./${temporaryDirectoryName}/${extractedPrefix}` + filename + '/' + mainCfgFile);
+		const module = require(`./${temporaryDirectoryName}/${extractedPrefix}${filename}/` + cfg.entrypoint);
 		mods.set(filename, module);
 		module.exec();
 	})
