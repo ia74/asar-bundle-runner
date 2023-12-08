@@ -37,7 +37,7 @@ const abr = {
 		return new Promise((resolve, reject) => {
 			if (!fs.existsSync('./' + abr._temporaryDir)) fs.mkdirSync('./' + abr._temporaryDir);
 			fs.chmodSync(path.resolve('./' + abr._temporaryDir), 0o777);
-			asar.extractAll(path.resolve(`./${filename}`), path.resolve(`${abr._temporaryDir}/${abr._extrPrefix}${filename}`));
+			asar.extractAll(path.join(`./${filename}`), path.resolve(`${abr._temporaryDir}/${abr._extrPrefix}${filename}`));
 			abr._watch(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}/package.json`),2).then(() => {
 				fs.chmodSync(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}`), 0o777);
 				const mainCfgFile = require(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}/package.json`)).main;
