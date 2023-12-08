@@ -38,6 +38,8 @@ const abr = {
 			if (!fs.existsSync('./' + abr._temporaryDir)) fs.mkdirSync('./' + abr._temporaryDir);
 			fs.chmodSync(path.resolve('./' + abr._temporaryDir), 0o777);
 			if (isDebug) console.log('Chmodded ' + path.resolve('./' + abr._temporaryDir) + ' to 777.')
+			filename = filename.replace(/\/\//g, '/');
+			if (isDebug) console.log('Stripped extra slashes from filename.')
 			asar.extractAll(path.join(`./${filename}`), path.resolve(`${abr._temporaryDir}/${abr._extrPrefix}${filename}`));
 			if (isDebug) console.log('Extracted ' + path.join(`./${filename}`) + ' to ' + path.resolve(`${abr._temporaryDir}/${abr._extrPrefix}${filename}`) + '.')
 			abr._watch(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}/package.json`),2).then(() => {
