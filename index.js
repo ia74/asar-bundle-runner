@@ -49,7 +49,14 @@ const abr = {
 		})
 	},
 	run: (filename) => {
-		abr.modules.get(filename).exec();
+		return new Promise((resolve, reject) => {
+			const module = abr.modules.get(filename);
+			if (module) {
+				resolve(module.exec());
+			} else {
+				reject('Module not found.');
+			}
+		})
 	}
 };
 module.exports = abr;
