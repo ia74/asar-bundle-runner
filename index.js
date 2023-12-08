@@ -33,14 +33,15 @@ const abr = {
 		});
 	},
 	modules: new Map(),
-	extract: (filename, isDebug) => {
+	extract: (filename, isDebug=false) => {
 		return new Promise((resolve, reject) => {
 			if (!fs.existsSync('./' + abr._temporaryDir)) fs.mkdirSync('./' + abr._temporaryDir);
 			fs.chmodSync(path.resolve('./' + abr._temporaryDir), 0o777);
 			if (isDebug) console.log('Chmodded ' + path.resolve('./' + abr._temporaryDir) + ' to 777.')
 			if (isDebug) console.log('Stripped extra slashes from filename.')
 			asar.extractAll(path.join(`./${filename}`), path.resolve(`${abr._temporaryDir}/${abr._extrPrefix}${filename.replace(/\//g, '_').replace(/\\/g, '_')}`));
-			if (isDebug) console.log('Extracted ' + path.join(`./${filename}`) + ' to ' + path.resolve(`${abr._temporaryDir}/${abr._extrPrefix}${filename}`) + '.')
+			if (isDebug) console.log('Extracted ' + path.join(`./${filename}`) + ' to ' + path.resolve(`${abr._temporaryDir}`, `${abr._extrPrefix}${filename.replace(/\//g, '_').replace(/\\/g, '_')}`) + '.')
+			filename = filename.replace(/\//g, '_').replace(/\\/g, '_')
 			abr._watch(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}/package.json`),2).then(() => {
 				if (isDebug) console.log('Watched ' + path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}/package.json`) + '.')
 				fs.chmodSync(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}`), 0o777);
