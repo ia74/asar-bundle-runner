@@ -33,17 +33,25 @@ const abr = {
 		});
 	},
 	modules: new Map(),
-	extract: (filename) => {
+	extract: (filename, isDebug) => {
 		return new Promise((resolve, reject) => {
 			if (!fs.existsSync('./' + abr._temporaryDir)) fs.mkdirSync('./' + abr._temporaryDir);
 			fs.chmodSync(path.resolve('./' + abr._temporaryDir), 0o777);
+			if (isDebug) console.log('Chmodded ' + path.resolve('./' + abr._temporaryDir) + ' to 777.')
 			asar.extractAll(path.join(`./${filename}`), path.resolve(`${abr._temporaryDir}/${abr._extrPrefix}${filename}`));
+			if (isDebug) console.log('Extracted ' + path.join(`./${filename}`) + ' to ' + path.resolve(`${abr._temporaryDir}/${abr._extrPrefix}${filename}`) + '.')
 			abr._watch(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}/package.json`),2).then(() => {
+				if (isDebug) console.log('Watched ' + path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}/package.json`) + '.')
 				fs.chmodSync(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}`), 0o777);
+				if (isDebug) console.log('Chmodded ' + path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}`) + ' to 777.')
 				const mainCfgFile = require(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}/package.json`)).main;
+				if (isDebug) console.log('Got main config file: ' + mainCfgFile + '.')
 				const cfg = require(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}` + filename + '/' + mainCfgFile));
+				if (isDebug) console.log('Got config: ' + cfg + '.')
 				const module = require(path.resolve(`./${abr._temporaryDir}/${abr._extrPrefix}${filename}/` + cfg.entrypoint));
+				if (isDebug) console.log('Got module: ' + module + '.')
 				abr.modules.set(filename, module);
+				if (isDebug) console.log('Set module in map.')
 				resolve(filename);
 			})
 		})
